@@ -1,54 +1,90 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
 
-const LightContext=createContext();
+function Chat() {
+  const [messages, setMessages] = useState(["Hello!", "How are you?"]);
+  const chatBoxRef = useRef(null);
 
-const ContextProvider=({children})=>{
+  // Function to simulate adding new messages
+  const addMessage = () => {
+    setMessages((prevMessages) => [...prevMessages, "New message!"]);
+  };
 
-  const [light,setLight]=useState(true);
+  // Scroll to the bottom whenever a new message is added
+  useEffect(() => {
+    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  }, [messages]);
 
-  return <LightContext.Provider value={{
-    light,
-    setLight
-  }}>
-    {children}
-  </LightContext.Provider>
+  return (
+    <div>
+      <div 
+        ref={chatBoxRef} 
+        style={{ height: "200px", overflowY: "scroll", border: "1px solid black" }}
+      >
+        {messages.map((msg, index) => (
+          <div key={index}>{msg}</div>
+        ))}
+      </div>
+      <button onClick={addMessage}>Add Message</button>
+    </div>
+  );
 }
 
 export const App=()=>{
+
   return <>
-    <ContextProvider>
-      <LightComp/>
-    </ContextProvider>
+    <Chat/>
   </>
 }
 
-const LightComp=()=>{
+// const LightContext=createContext();
 
-  return <>
-    <BulbComp/>
-    <ToggleBulb/>
-  </>
-}
+// const ContextProvider=({children})=>{
 
-const BulbComp=()=>{
-  const {light}=useContext(LightContext)
-  return <>
-    {light ? "Bulb on": "Bulb Off"}
-  </>
-}
+//   const [light,setLight]=useState(true);
+
+//   return <LightContext.Provider value={{
+//     light,
+//     setLight
+//   }}>
+//     {children}
+//   </LightContext.Provider>
+// }
+
+// export const App=()=>{
+//   return <>
+//     <ContextProvider>
+//       <LightComp/>
+//     </ContextProvider>
+//   </>
+// }
+
+// const LightComp=()=>{
+
+//   return <>
+//     <BulbComp/>
+//     <ToggleBulb/>
+//   </>
+// }
+
+// const BulbComp=()=>{
+//   const {light}=useContext(LightContext)
+//   return <>
+//     {light ? "Bulb on": "Bulb Off"}
+//   </>
+// }
 
 
-const ToggleBulb=()=>{
-  const {setLight}=useContext(LightContext)
+// const ToggleBulb=()=>{
+//   const {setLight}=useContext(LightContext)
 
-  function Toggle(){
-    setLight(curr => !curr)
-  }
+//   function Toggle(){
+//     setLight(curr => !curr)
+//   }
 
-  return <>
-    <button onClick={Toggle}>Toggle Bulb</button>
-  </>
-}
+//   return <>
+//     <button onClick={Toggle}>Toggle Bulb</button>
+//   </>
+// }
 
 
 //Prop drilling 
